@@ -1,0 +1,2 @@
+# ShareYourTrip_ms_accommodations
+ShareYourTrip Accommodations Microservice
