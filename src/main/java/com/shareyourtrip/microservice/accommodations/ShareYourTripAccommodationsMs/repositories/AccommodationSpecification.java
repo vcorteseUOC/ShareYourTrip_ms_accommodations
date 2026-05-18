@@ -22,14 +22,14 @@ public class AccommodationSpecification {
             query.distinct(true);
 
             // Solo alojamientos activos
-            predicates.add(cb.equal(root.get("status"), AccommodationStatus.ACTIVE));
+            predicates.add(cb.equal(root.get("status"),  AccommodationStatus.ACTIVE));
 
             if (filter.getCity() != null && !filter.getCity().isBlank()) {
                 predicates.add(
                         cb.like(
                                 cb.lower(root.get("city")),
                                 "%" + filter.getCity().toLowerCase() + "%"
-                        )
+                        ) 
                 );
             }
 

@@ -1,9 +1,6 @@
 package com.shareyourtrip.microservice.accommodations.ShareYourTripAccommodationsMs.mappers;
 
-import com.shareyourtrip.microservice.accommodations.ShareYourTripAccommodationsMs.dtos.AccommodationImageRequestDTO;
-import com.shareyourtrip.microservice.accommodations.ShareYourTripAccommodationsMs.dtos.AccommodationRequestDto;
-import com.shareyourtrip.microservice.accommodations.ShareYourTripAccommodationsMs.dtos.AccommodationResponseDto;
-import com.shareyourtrip.microservice.accommodations.ShareYourTripAccommodationsMs.dtos.FacilityDTO;
+import com.shareyourtrip.microservice.accommodations.ShareYourTripAccommodationsMs.dtos.*;
 import com.shareyourtrip.microservice.accommodations.ShareYourTripAccommodationsMs.entitites.*;
 
 import java.time.LocalDateTime;
@@ -26,6 +23,7 @@ public class AccommodationMapper {
                 // Basic
                 .title(entity.getTitle())
                 .description(entity.getDescription())
+                .rules(entity.getRules())
 
                 // Address
                 .addressLine(entity.getAddressLine())
@@ -47,6 +45,15 @@ public class AccommodationMapper {
 
                 // Facilities
                 .facilities(mapFacilities(entity.getFacility()))
+
+                // Availability
+                .availabilities(entity.getAvailabilities().stream()
+                        .map(a -> AvailabilityDto.builder()
+                                .id(a.getId())
+                                .availableDate(a.getAvailableDate())
+                                .isAvailable(a.getIsAvailable())
+                                .build())
+                        .toList())
 
                 .build();
     }
@@ -101,16 +108,11 @@ public class AccommodationMapper {
             accommodation.setImages(images);
         }
 
-        if (request.getAvailableDates() != null && !request.getAvailableDates().isEmpty()) {
-            List<AccommodationAvailability> availabilities = request.getAvailableDates()
+        if (request.getAvailabilities() != null && !request.getAvailabilities().isEmpty()) {
+            List<AccommodationAvailability> availabilities = request.getAvailabilities()
                     .stream()
-                    .distinct()
-                    .map(date -> AccommodationAvailability.builder()
-                            .accommodation(accommodation)
-                            .availableDate(date)
-                            .isAvailable(true)
-                            .build())
-                    .toList();
+                    .map(dto -> availabilityDtoToEntity(dto, accommodation))
+                    .collect(Collectors.toList());
 
             accommodation.setAvailabilities(new ArrayList<>(availabilities));
         }
@@ -143,6 +145,39 @@ public class AccommodationMapper {
                 .washing(facility.getWashing())
                 .air(facility.getAir())
                 .kitchen(facility.getKitchen())
+                .build();
+    }
+
+    public static Facility facilityDTOToEntity(FacilityDTO facilityDTO, Accommodation accommodation) {
+        if (facilityDTO == null) return null;
+
+        return Facility.builder()
+                .accommodation(accommodation)
+                .wifi(facilityDTO.getWifi())
+                .washing(facilityDTO.getWashing())
+                .air(facilityDTO.getAir())
+                .kitchen(facilityDTO.getKitchen())
+                .build();
+    }
+
+    public static AccommodationImage imageRequestToEntity(AccommodationImageRequestDTO imageRequest, Accommodation accommodation) {
+        if (imageRequest == null) return null;
+
+        return AccommodationImage.builder()
+                .accommodation(accommodation)
+                .imageUrl(imageRequest.getImageUrl())
+                .isCover(Boolean.TRUE.equals(imageRequest.getIsCover()))
+                .createdAt(LocalDateTime.now())
+                .build();
+    }
+
+    public static AccommodationAvailability availabilityDtoToEntity(AvailabilityDto dto, Accommodation accommodation) {
+        if (dto == null) return null;
+
+        return AccommodationAvailability.builder()
+                .accommodation(accommodation)
+                .availableDate(dto.getAvailableDate())
+                .isAvailable(dto.getIsAvailable() != null ? dto.getIsAvailable() : true)
                 .build();
     }
 }

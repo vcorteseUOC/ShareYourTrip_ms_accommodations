@@ -5,9 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
-
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.List;
 
 @Getter
@@ -43,5 +41,6 @@ public class AccommodationRequestDto {
 
     private FacilityDTO facilities;
     private List<AccommodationImageRequestDTO> images;
-    private List<LocalDate> availableDates;
+    private List<AvailabilityDto> availabilities;
+    private String status;
 }

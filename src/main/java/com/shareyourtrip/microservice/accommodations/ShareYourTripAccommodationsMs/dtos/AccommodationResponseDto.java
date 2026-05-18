@@ -21,6 +21,7 @@ public class AccommodationResponseDto {
     // Info básica
     private String title;
     private String description;
+    private String rules;
 
     // Dirección
     private String addressLine;
@@ -43,4 +44,6 @@ public class AccommodationResponseDto {
     private String coverImage;
 
     private FacilityDTO facilities;
+
+    private List<AvailabilityDto> availabilities;
 }

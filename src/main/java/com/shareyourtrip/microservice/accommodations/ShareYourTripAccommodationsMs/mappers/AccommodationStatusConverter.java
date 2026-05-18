@@ -9,7 +9,7 @@ public class AccommodationStatusConverter implements AttributeConverter<Accommod
 
     @Override
     public String convertToDatabaseColumn(AccommodationStatus attribute) {
-        return attribute == null ? null : attribute.name().toLowerCase();
+        return attribute == null ? null : attribute.name();
     }
 
     @Override
